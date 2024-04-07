@@ -194,12 +194,12 @@ public class Principal extends JFrame implements ActualizarDatos{
     }
     
     private void nivelCambiado(int cantidadParejas) {
-        for (Component comp : panelBotones.getComponents()) {
-            if (comp instanceof JButton) {
-                panelBotones.remove(comp);
-            }
-        }
-
+//        for (Component comp : panelBotones.getComponents()) {
+//            if (comp instanceof JButton) {
+//                panelBotones.remove(comp);
+//            }
+//        }
+        panelBotones.removeAll();
         switch (cantidadParejas) {
             case 5:
                 panelBotones.setLayout(new GridLayout(2, 5));
@@ -223,7 +223,13 @@ public class Principal extends JFrame implements ActualizarDatos{
             //Agregamos los botones al JFrame
             panelBotones.add(button);
 
-        }//Agregado
+        }
+        
+        
+        getContentPane().removeAll();
+        getContentPane().setLayout(new BorderLayout());
+        
+        //Agregado
         JPanel infoPanel = new JPanel(new GridLayout(1, 3)); // Un GridLayout de 2x1 para los labels jugador1 y jugador2
         infoPanel.setBackground(color);
         infoPanel.add(labelJugador1());
@@ -231,11 +237,11 @@ public class Principal extends JFrame implements ActualizarDatos{
         infoPanel.add(labelJugador2());
 
         panelBotones.revalidate();
-        getContentPane().setLayout(new BorderLayout());
         getContentPane().add(panelBotones, BorderLayout.CENTER);
         getContentPane().add(infoPanel, BorderLayout.NORTH);
         setCards();
         revalidate();
+        repaint();
         setLocationRelativeTo(null);
         pack();
     }

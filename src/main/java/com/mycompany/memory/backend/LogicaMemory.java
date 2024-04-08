@@ -1,6 +1,8 @@
 package com.mycompany.memory.backend;
 
 import com.mycompany.memory.frontend.util.ActualizarDatos;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,10 +26,15 @@ public class LogicaMemory {
     private int indiceJugadorEnTurno;
     private ActualizarDatos observador;
     private String resultado;
+    JButton[] buttons;
+    private Partida partida;
+    private GuardarDatos escribirDatos;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyy HH:mm");
 
     public LogicaMemory(Jugador jugador1, Jugador jugador2) {
         indiceJugadorEnTurno = 0;
         jugadores = new Jugador[2];
+        escribirDatos = new GuardarDatos();
         jugadores[0] = jugador1;
         jugadores[1] = jugador2;
     }
@@ -42,13 +49,12 @@ public class LogicaMemory {
     public void setObservador(ActualizarDatos observador) {
         this.observador = observador;
     }
-    
-    private void notificarObservador(){
+
+    private void notificarObservador() {
         if (observador != null) {
             observador.actualizar();
         }
     }
- 
 
     public int[] setCardNumbers() {
 
@@ -97,6 +103,7 @@ public class LogicaMemory {
             caraUp = false;
             cambiarTurno();
             notificarObservador();
+            juegoTerminado();
         }
 
     }
@@ -109,18 +116,17 @@ public class LogicaMemory {
             pbtn[0] = btn;
             segunda = false;
             caraUp = true;
-            //Al presionar el segundo boton se entra a esta condicion
-        } else {
+            
+        } else {//Al presionar el segundo boton se entra a esta condicion
             btn.setEnabled(false);
             img2 = (ImageIcon) btn.getDisabledIcon();
             pbtn[1] = btn;
             segunda = true;
-            juegoTerminado(buttons);
         }
 
     }
 
-    public void juegoTerminado(JButton[] buttons) {
+    public void juegoTerminado() {
         int contador = 0;
         for (JButton button : buttons) {
             if (!button.isEnabled()) {
@@ -128,20 +134,34 @@ public class LogicaMemory {
             }
         }
         if (contador == buttons.length) {
-            if (jugadores[0].getPunteo() > jugadores[1].getPunteo() ) {
-                setResultado(String.format("<html>%s ha ganado<br>Puntaje: %d</html>",jugadores[0].getNombre(), jugadores[0].getPunteo()));
-            }else if (jugadores[0].getPunteo() < jugadores[1].getPunteo()){
-                setResultado(String.format("<html>%s ha ganado<br>Puntaje: %d</html>",jugadores[1].getNombre(), jugadores[1].getPunteo()));
-                
-            }else{
+            if (jugadores[0].getPunteo() > jugadores[1].getPunteo()) {
+                setResultado(String.format("<html>%s ha ganado<br>Puntaje: %d</html>", jugadores[0].getNombre(), jugadores[0].getPunteo()));
+                agregarRegistro(jugadores[0], jugadores[1]);
+            } else if (jugadores[0].getPunteo() < jugadores[1].getPunteo()) {
+                setResultado(String.format("<html>%s ha ganado<br>Puntaje: %d</html>", jugadores[1].getNombre(), jugadores[1].getPunteo()));
+                agregarRegistro(jugadores[1], jugadores[0]);
+            } else {
                 setResultado(String.format("Han empatado"));
-                
+
             }
-            
+
             setTermino(true);
 
         }
 
+    }
+    
+        private void agregarRegistro(Jugador ganador, Jugador perdedor) {
+        partida.setGanador(ganador.getNombre());
+        partida.setPuntaje(ganador.getPunteo());
+        partida.setPerdedor(perdedor.getNombre());
+        partida.setFechaHora(LocalDateTime.now().format(formatter));
+        try {
+
+            escribirDatos.guardarArchivo(partida);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void IndicarQuienEmpieza() {
@@ -205,6 +225,22 @@ public class LogicaMemory {
 
     public void setResultado(String resultado) {
         this.resultado = resultado;
+    }
+
+    public Partida getPartida() {
+        return partida;
+    }
+
+    public void setPartida(Partida partida) {
+        this.partida = partida;
+    }
+
+    public JButton[] getButtons() {
+        return buttons;
+    }
+
+    public void setButtons(JButton[] buttons) {
+        this.buttons = buttons;
     }
     
     

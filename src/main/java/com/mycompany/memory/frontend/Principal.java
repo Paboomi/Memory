@@ -7,7 +7,6 @@ import com.mycompany.memory.frontend.dialogs.Help;
 import com.mycompany.memory.frontend.util.ActualizarDatos;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
@@ -33,7 +32,7 @@ import javax.swing.SwingConstants;
  *
  * @author saien
  */
-public class Principal extends JFrame implements ActualizarDatos{
+public class Principal extends JFrame implements ActualizarDatos {
 
     private LogicaMemory log;
     GenerarBotones crearBotones;
@@ -50,19 +49,18 @@ public class Principal extends JFrame implements ActualizarDatos{
     JLabel lblJugador1 = new JLabel();
     JLabel lblJugador2 = new JLabel();
     Color color = Color.decode("#333333");
-    
+    private Partida partida;
 
     public Principal() throws HeadlessException {
+        partida = new Partida();
         jugador1 = new Jugador();
         jugador2 = new Jugador();
         log = new LogicaMemory(jugador1, jugador2);
+        log.setPartida(partida);
         log.setObservador(this);
         crearBotones = new GenerarBotones(log);
         setTitle("Memory Game");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //setLayout(new GridLayout(2, 5));
-
-        //pedirNombre();
         pedirDatosInicio();
         setJMenuBar(crearMenu());
         setLocationRelativeTo(null);
@@ -107,6 +105,23 @@ public class Principal extends JFrame implements ActualizarDatos{
         JMenuItem mejorJugador = new JMenuItem("Mejor Jugador");
         JMenuItem informacion = new JMenuItem("Sobre el desarrollador");
         JMenuItem instrucciones = new JMenuItem("Instrucciones");
+        estadisticas.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    PruebaTabla tabla = new PruebaTabla(partida);
+                    tabla.setVisible(true);
+                } catch (Exception e) {
+                }
+            }
+
+        });
+        nuevoJuego.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                pedirDatosInicio();
+            }
+        });
         informacion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -116,6 +131,17 @@ public class Principal extends JFrame implements ActualizarDatos{
                     JOptionPane.showMessageDialog(Principal.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
+            }
+        });
+        salir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    System.exit(0);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(Principal.this, e.getMessage(), "Error al salir del programa", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         instrucciones.addActionListener(new ActionListener() {
@@ -134,6 +160,7 @@ public class Principal extends JFrame implements ActualizarDatos{
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
+                    setPunteos();
                     log.setCantidadParejas(5);
                     log.IndicarQuienEmpieza();
                     nivelCambiado(log.getCantidadParejas());
@@ -147,9 +174,14 @@ public class Principal extends JFrame implements ActualizarDatos{
         nivel2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                log.setCantidadParejas(10);
-                log.IndicarQuienEmpieza();
-                nivelCambiado(log.getCantidadParejas());
+                try {
+                    setPunteos();
+                    log.setCantidadParejas(10);
+                    log.IndicarQuienEmpieza();
+                    nivelCambiado(log.getCantidadParejas());
+                } catch (Exception e) {
+                }
+
             }
 
         });
@@ -157,9 +189,14 @@ public class Principal extends JFrame implements ActualizarDatos{
         nivel3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                log.setCantidadParejas(15);
-                log.IndicarQuienEmpieza();
-                nivelCambiado(log.getCantidadParejas());
+                try {
+                    setPunteos();
+                    log.setCantidadParejas(15);
+                    log.IndicarQuienEmpieza();
+                    nivelCambiado(log.getCantidadParejas());
+                } catch (Exception e) {
+                }
+
             }
 
         });
@@ -192,7 +229,7 @@ public class Principal extends JFrame implements ActualizarDatos{
 
         return miBarra;
     }
-    
+
     private void nivelCambiado(int cantidadParejas) {
 //        for (Component comp : panelBotones.getComponents()) {
 //            if (comp instanceof JButton) {
@@ -216,6 +253,7 @@ public class Principal extends JFrame implements ActualizarDatos{
         try {
 
             buttons = crearBotones.generarBotones(cantidadParejas * 2, this);
+            log.setButtons(buttons);
         } catch (ImagenException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -224,11 +262,10 @@ public class Principal extends JFrame implements ActualizarDatos{
             panelBotones.add(button);
 
         }
-        
-        
+
         getContentPane().removeAll();
         getContentPane().setLayout(new BorderLayout());
-        
+
         //Agregado
         JPanel infoPanel = new JPanel(new GridLayout(1, 3)); // Un GridLayout de 2x1 para los labels jugador1 y jugador2
         infoPanel.setBackground(color);
@@ -341,6 +378,11 @@ public class Principal extends JFrame implements ActualizarDatos{
         // Mostrar un diálogo con los botones de radio para seleccionar el nivel
         JOptionPane.showConfirmDialog(null, panelNiveles, "Seleccionar Nivel", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
+    }
+
+    private void setPunteos() {
+        jugador1.setPunteo(0);
+        jugador2.setPunteo(0);
     }
 
     @Override

@@ -18,7 +18,6 @@ public abstract class CustomDialog extends JDialog{
         setSize(400, 150);
         setPreferredSize(new Dimension(400, 150));
         setLocationRelativeTo(null);
-        //setUndecorated(true);
         getContentPane().setBackground(Color.BLACK);
         add(formatoMensaje(), BorderLayout.CENTER);
     }

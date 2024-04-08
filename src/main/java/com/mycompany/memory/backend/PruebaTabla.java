@@ -23,7 +23,7 @@ public class PruebaTabla extends JFrame {
 
     public PruebaTabla(Partida partida) {
         this.partida = partida;
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(600, 500);
         setLayout(new BorderLayout());
         add(mostrarDatos(), BorderLayout.CENTER);

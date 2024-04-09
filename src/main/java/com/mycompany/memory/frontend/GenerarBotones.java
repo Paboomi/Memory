@@ -5,6 +5,7 @@ import com.mycompany.memory.exceptions.ImagenException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -58,8 +59,9 @@ public class GenerarBotones {
                             JOptionPane.showMessageDialog(pattern, log.getResultado());
                             log.setTermino(false);
                         }
-                    } catch (Exception e) {
+                    } catch (HeadlessException e) {
                         e.printStackTrace();
+                        JOptionPane.showMessageDialog(pattern, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
 

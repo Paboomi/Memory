@@ -191,10 +191,6 @@ public class LogicaMemory {
         return jugadores[indiceJugadorEnTurno];
     }
 
-    private int paresAleatorios(int parejas) {
-        return rand.nextInt(parejas) * 5 + 5;
-    }
-
     public boolean isTermino() {
         return termino;
     }

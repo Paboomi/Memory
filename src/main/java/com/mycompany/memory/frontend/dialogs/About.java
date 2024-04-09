@@ -1,5 +1,6 @@
 package com.mycompany.memory.frontend.dialogs;
 
+import com.mycompany.memory.frontend.util.CustomDialog;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;

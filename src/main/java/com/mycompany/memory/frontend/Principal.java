@@ -1,9 +1,11 @@
 package com.mycompany.memory.frontend;
 
+import com.mycompany.memory.frontend.reportes.HistorialGanadores;
 import com.mycompany.memory.frontend.dialogs.About;
 import com.mycompany.memory.backend.*;
 import com.mycompany.memory.exceptions.ImagenException;
 import com.mycompany.memory.frontend.dialogs.Help;
+import com.mycompany.memory.frontend.reportes.MejorJugador;
 import com.mycompany.memory.frontend.util.ActualizarDatos;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -38,17 +40,18 @@ public class Principal extends JFrame implements ActualizarDatos {
     GenerarBotones crearBotones;
     private About acercaDe = new About(this);
     private Help help = new Help(this);
+    private MejorJugador MVP = new MejorJugador(this);
 
-    Jugador jugador1;
-    Jugador jugador2;
+    private Jugador jugador1;
+    private Jugador jugador2;
     //Obtengo carpeta de imagenes
     private static final String PATH_IMAGENES_FRUTAS = "com/mycompany/memory/images";
-    JLabel lblInfo = new JLabel();
+    private JLabel lblInfo = new JLabel();
     private JButton[] buttons;
-    JPanel panelBotones = new JPanel();
-    JLabel lblJugador1 = new JLabel();
-    JLabel lblJugador2 = new JLabel();
-    Color color = Color.decode("#333333");
+    private JPanel panelBotones = new JPanel();
+    private JLabel lblJugador1 = new JLabel();
+    private JLabel lblJugador2 = new JLabel();
+    private Color color = Color.decode("#333333");
     private Partida partida;
 
     public Principal() throws HeadlessException {
@@ -78,7 +81,7 @@ public class Principal extends JFrame implements ActualizarDatos {
                 buttons[i].setDisabledIcon(new ImageIcon(getClass().getClassLoader().getResource(PATH_IMAGENES_FRUTAS + "/" + numbers[i] + ".png")));
                 buttons[i].setVerticalTextPosition(AbstractButton.CENTER);
                 buttons[i].setHorizontalTextPosition(AbstractButton.CENTER);
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "No se pudo cargar la imagen", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -101,15 +104,29 @@ public class Principal extends JFrame implements ActualizarDatos {
         //Creamos los items para cada opcion
         JMenuItem nuevoJuego = new JMenuItem("Nuevo Juego");
         JMenuItem salir = new JMenuItem("Salir");
-        JMenuItem estadisticas = new JMenuItem("Estadisticas");
+        JMenuItem estadisticas = new JMenuItem("Historial Ganadores");
         JMenuItem mejorJugador = new JMenuItem("Mejor Jugador");
         JMenuItem informacion = new JMenuItem("Sobre el desarrollador");
         JMenuItem instrucciones = new JMenuItem("Instrucciones");
+
+        //Agregamos los eventos a los items
+        mejorJugador.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    MVP.mostrarDialog();
+                } catch (ExceptionInInitializerError e) {
+                    JOptionPane.showMessageDialog(Principal.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+                }
+            }
+        });
+
         estadisticas.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    PruebaTabla tabla = new PruebaTabla(partida);
+                    HistorialGanadores tabla = new HistorialGanadores(partida);
                     tabla.setVisible(true);
                 } catch (Exception e) {
                 }
@@ -119,7 +136,12 @@ public class Principal extends JFrame implements ActualizarDatos {
         nuevoJuego.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                pedirDatosInicio();
+                try {
+                    pedirDatosInicio();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
         informacion.addActionListener(new ActionListener() {
@@ -148,7 +170,6 @@ public class Principal extends JFrame implements ActualizarDatos {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    //Mostrar las instrucciones al usuario
                     help.setVisible(true);
                 } catch (Exception e) {
                 }
@@ -231,12 +252,9 @@ public class Principal extends JFrame implements ActualizarDatos {
     }
 
     private void nivelCambiado(int cantidadParejas) {
-//        for (Component comp : panelBotones.getComponents()) {
-//            if (comp instanceof JButton) {
-//                panelBotones.remove(comp);
-//            }
-//        }
+        //Limpiamos el panel
         panelBotones.removeAll();
+        //Creamos la cantidad de cuadriculas segun el nivel
         switch (cantidadParejas) {
             case 5:
                 panelBotones.setLayout(new GridLayout(2, 5));
@@ -262,17 +280,18 @@ public class Principal extends JFrame implements ActualizarDatos {
             panelBotones.add(button);
 
         }
-
+        //Limpiamos nuestro Frame actual y creamos un nuevo diseño
         getContentPane().removeAll();
         getContentPane().setLayout(new BorderLayout());
 
-        //Agregado
-        JPanel infoPanel = new JPanel(new GridLayout(1, 3)); // Un GridLayout de 2x1 para los labels jugador1 y jugador2
+       // Un GridLayout de 1x3 para los labels jugador1 Jugador en Turno y jugador2
+        JPanel infoPanel = new JPanel(new GridLayout(1, 3));
         infoPanel.setBackground(color);
         infoPanel.add(labelJugador1());
         infoPanel.add(mostrarJugadorTurno());
         infoPanel.add(labelJugador2());
-
+        
+        //Revalidamos el panel de los botones
         panelBotones.revalidate();
         getContentPane().add(panelBotones, BorderLayout.CENTER);
         getContentPane().add(infoPanel, BorderLayout.NORTH);
@@ -282,22 +301,21 @@ public class Principal extends JFrame implements ActualizarDatos {
         setLocationRelativeTo(null);
         pack();
     }
-
+    
+    //Label para el jugador en turno
     private JLabel mostrarJugadorTurno() {
 
         lblInfo.setText(String.format("<html>Jugador en turno: %s<br>Punteo: %d</html>", log.ObtenerJugadorEnTurno().getNombre(), log.ObtenerJugadorEnTurno().getPunteo()));
         lblInfo.setForeground(Color.ORANGE);
-        lblInfo.setFont(new Font("Verdana", Font.BOLD, 20));
+        lblInfo.setFont(new Font("Verdana", Font.BOLD, 18));
         lblInfo.setHorizontalAlignment(SwingConstants.CENTER);
-        //lblInfo.setOpaque(true);
-        //lblInfo.setBackground(Color.BLACK);
         return lblInfo;
     }
 
     public JLabel labelJugador1() {
         lblJugador1.setText(String.format("<html>Jugador 1: %s<br>Punteo: %d</html>", jugador1.getNombre(), jugador1.getPunteo()));
         //lblJugador1.setHorizontalAlignment(SwingConstants.NORTH_WEST);
-        lblJugador1.setFont(new Font("Verdana", Font.BOLD, 20));
+        lblJugador1.setFont(new Font("Verdana", Font.BOLD, 16));
         lblJugador1.setForeground(Color.ORANGE);
         lblJugador1.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
         return lblJugador1;
@@ -306,12 +324,13 @@ public class Principal extends JFrame implements ActualizarDatos {
     public JLabel labelJugador2() {
         lblJugador2.setText(String.format("<html>Jugador 2: %s<br>Punteo: %d</html>", jugador2.getNombre(), jugador2.getPunteo()));
         lblJugador2.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblJugador2.setFont(new Font("Verdana", Font.BOLD, 20));
+        lblJugador2.setFont(new Font("Verdana", Font.BOLD, 16));
         lblJugador2.setForeground(Color.ORANGE);
         lblJugador2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 20));
         return lblJugador2;
     }
 
+    //Metodo que se muestra al inicio o al iniciar una nueva partida
     private void pedirDatosInicio() {
         jugador1.setNombre(JOptionPane.showInputDialog("Ingrese el nombre del jugador 1:"));
         jugador2.setNombre(JOptionPane.showInputDialog("Ingrese el nombre del jugador 2:"));

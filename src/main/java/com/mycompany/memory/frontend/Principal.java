@@ -40,7 +40,6 @@ public class Principal extends JFrame implements ActualizarDatos {
     GenerarBotones crearBotones;
     private About acercaDe = new About(this);
     private Help help = new Help(this);
-    private MejorJugador MVP = new MejorJugador(this);
 
     private Jugador jugador1;
     private Jugador jugador2;
@@ -114,6 +113,8 @@ public class Principal extends JFrame implements ActualizarDatos {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
+
+                    MejorJugador MVP = new MejorJugador(Principal.this);
                     MVP.mostrarDialog();
                 } catch (ExceptionInInitializerError e) {
                     JOptionPane.showMessageDialog(Principal.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -137,6 +138,7 @@ public class Principal extends JFrame implements ActualizarDatos {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
+                    setPunteos();
                     pedirDatosInicio();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -284,13 +286,13 @@ public class Principal extends JFrame implements ActualizarDatos {
         getContentPane().removeAll();
         getContentPane().setLayout(new BorderLayout());
 
-       // Un GridLayout de 1x3 para los labels jugador1 Jugador en Turno y jugador2
+        // Un GridLayout de 1x3 para los labels jugador1 Jugador en Turno y jugador2
         JPanel infoPanel = new JPanel(new GridLayout(1, 3));
         infoPanel.setBackground(color);
         infoPanel.add(labelJugador1());
         infoPanel.add(mostrarJugadorTurno());
         infoPanel.add(labelJugador2());
-        
+
         //Revalidamos el panel de los botones
         panelBotones.revalidate();
         getContentPane().add(panelBotones, BorderLayout.CENTER);
@@ -301,7 +303,7 @@ public class Principal extends JFrame implements ActualizarDatos {
         setLocationRelativeTo(null);
         pack();
     }
-    
+
     //Label para el jugador en turno
     private JLabel mostrarJugadorTurno() {
 

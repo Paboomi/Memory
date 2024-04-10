@@ -53,12 +53,7 @@ public class GenerarBotones {
                 public void actionPerformed(ActionEvent ae) {
                     try {
                         log.btnEnabled(button, buttons);
-                        boolean termino = false;
-                        termino = log.isTermino();
-                        if (termino) {
-                            JOptionPane.showMessageDialog(pattern, log.getResultado());
-                            log.setTermino(false);
-                        }
+                        
                     } catch (HeadlessException e) {
                         e.printStackTrace();
                         JOptionPane.showMessageDialog(pattern, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -71,7 +66,12 @@ public class GenerarBotones {
                 public void mouseExited(MouseEvent e) {
                     try {
                         log.compararImagenes();
-
+                        boolean termino = false;
+                        termino = log.isTermino();
+                        if (termino) {
+                            JOptionPane.showMessageDialog(pattern, log.getResultado());
+                            log.setTermino(false);
+                        }
                     } catch (Exception evt) {
                         evt.printStackTrace();
                     }

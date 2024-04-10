@@ -15,15 +15,12 @@ public class GuardarDatos {
     private FileWriter fw;
     private BufferedWriter bw;
     private PrintWriter pw;
-    
+    private static final String PATH_DATOS = "data.txt";
 
     public void guardarArchivo(Partida partida) {
 
         try {
-            File file = new File("data.txt");
-               if (!file.exists()) {
-                    file.createNewFile();
-                }
+            File file = new File(PATH_DATOS);
                 fw = new FileWriter(file, true);
                 bw = new BufferedWriter(fw);
                 pw = new PrintWriter(bw);

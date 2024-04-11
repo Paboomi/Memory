@@ -52,7 +52,7 @@ public class GenerarBotones {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
                     try {
-                        log.btnEnabled(button, buttons);
+                        log.btnEnabled(button);
                         
                     } catch (HeadlessException e) {
                         e.printStackTrace();

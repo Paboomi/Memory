@@ -21,15 +21,15 @@ public class GuardarDatos {
 
         try {
             File file = new File(PATH_DATOS);
-                fw = new FileWriter(file, true);
-                bw = new BufferedWriter(fw);
-                pw = new PrintWriter(bw);
-                pw.println(String.format("%s,%d,%s,%s", partida.getGanador(),
-                        partida.getPuntaje(), partida.getPerdedor(), partida.getFechaHora()
-                ));
-            }catch (IOException e) {
+            fw = new FileWriter(file, true);
+            bw = new BufferedWriter(fw);
+            pw = new PrintWriter(bw);
+            pw.println(String.format("%s,%d,%s,%s", partida.getGanador(),
+                    partida.getPuntaje(), partida.getPerdedor(), partida.getFechaHora()
+            ));
+        } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 if (pw != null) {
                     pw.close();
@@ -45,5 +45,5 @@ public class GuardarDatos {
                 e.printStackTrace();
             }
         }
-        }
     }
+}

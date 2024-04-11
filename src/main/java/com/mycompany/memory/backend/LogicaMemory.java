@@ -42,14 +42,6 @@ public class LogicaMemory {
     public LogicaMemory() {
     }
 
-    public ActualizarDatos getObservador() {
-        return observador;
-    }
-
-    public void setObservador(ActualizarDatos observador) {
-        this.observador = observador;
-    }
-
     private void notificarObservador() {
         if (observador != null) {
             observador.actualizar();
@@ -108,7 +100,7 @@ public class LogicaMemory {
 
     }
 
-    public void btnEnabled(JButton btn, JButton[] buttons) {
+    public void btnEnabled(JButton btn) {
         //Al presionar el primer boton se entra en esta condicion
         if (!caraUp) {
             btn.setEnabled(false);
@@ -116,7 +108,7 @@ public class LogicaMemory {
             pbtn[0] = btn;
             segunda = false;
             caraUp = true;
-            
+
         } else {//Al presionar el segundo boton se entra a esta condicion
             btn.setEnabled(false);
             img2 = (ImageIcon) btn.getDisabledIcon();
@@ -150,8 +142,8 @@ public class LogicaMemory {
         }
 
     }
-    
-        private void agregarRegistro(Jugador ganador, Jugador perdedor) {
+
+    private void agregarRegistro(Jugador ganador, Jugador perdedor) {
         partida.setGanador(ganador.getNombre());
         partida.setPuntaje(ganador.getPunteo());
         partida.setPerdedor(perdedor.getNombre());
@@ -238,7 +230,13 @@ public class LogicaMemory {
     public void setButtons(JButton[] buttons) {
         this.buttons = buttons;
     }
-    
-    
+
+    public ActualizarDatos getObservador() {
+        return observador;
+    }
+
+    public void setObservador(ActualizarDatos observador) {
+        this.observador = observador;
+    }
 
 }

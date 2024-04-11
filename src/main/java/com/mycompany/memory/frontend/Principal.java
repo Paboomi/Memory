@@ -127,7 +127,7 @@ public class Principal extends JFrame implements ActualizarDatos {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    HistorialGanadores tabla = new HistorialGanadores(partida);
+                    HistorialGanadores tabla = new HistorialGanadores();
                     tabla.setVisible(true);
                 } catch (Exception e) {
                 }

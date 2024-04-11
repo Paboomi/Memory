@@ -48,7 +48,7 @@ public class MejorJugador extends CustomDialog {
         }
 
     }
-
+//Metodo para encontrar al MVP
     private void buscarMVP() {
         //Leemos y almacenamos los datos del archivo en un arreglo
         data = leerDatos("data.txt");
@@ -60,7 +60,7 @@ public class MejorJugador extends CustomDialog {
 
     //Metodo para obtener los datos del archivo
     private String[][] leerDatos(String archivo) {
-        String[][] data = null;
+        String[][] datos = null;
 
         //Intentamos leer el archivo
         try (Scanner sc = new Scanner(new File(archivo))) {
@@ -76,7 +76,7 @@ public class MejorJugador extends CustomDialog {
             //cerramos el escaner
             sc.close();
             //Le damos las dimensiones al arreglo de datos
-            data = new String[numFilas][numColumnas];
+            datos = new String[numFilas][numColumnas];
             //Creamos un nuevo Scanner para volver a leer el archivo
             Scanner scNuevo = new Scanner(new File(archivo));
             //Comenzamos desde la fila 0
@@ -85,7 +85,7 @@ public class MejorJugador extends CustomDialog {
                 String[] line = scNuevo.nextLine().split(",");
                 for (int col = 0; col < line.length; col++) {
                     //Almacenamos los elementos del arreglo line en el arreglo bidimensional
-                    data[fila][col] = line[col];
+                    datos[fila][col] = line[col];
 
                 }
                 fila++;
@@ -97,20 +97,25 @@ public class MejorJugador extends CustomDialog {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        return data;
+        return datos;
     }
 
     //Metodo para ordenar el arreglo
     private void ordenarDatos(String[][] datos) {
+        
         //Obtenemos el tamaño del arreglo
         int n = datos.length;
+        
         //Metodo por insercion
         //iteramos sobre el tamaño del arreglo
         for (int i = 1; i < n; i++) {
+            
             //Guardamos la fila a insertar
             String[] key = datos[i];
+            
             //Movemos nuestro indice uno a la izquierda
             int j = i - 1;
+            
             //Instanciamos los puntajes a comparar
             int comp1 = Integer.parseInt((String) datos[j][1]);
             int comp2 = Integer.parseInt((String) key[1]);

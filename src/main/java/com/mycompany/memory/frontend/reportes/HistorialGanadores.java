@@ -1,14 +1,10 @@
 package com.mycompany.memory.frontend.reportes;
-
-import com.mycompany.memory.backend.Partida;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,30 +21,18 @@ import javax.swing.table.DefaultTableModel;
  * @author saien
  */
 public class HistorialGanadores extends JFrame {
-
-    private Partida partida;
+    
     private JTable table;
 
-    public HistorialGanadores(Partida partida) {
-        this.partida = partida;
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(600, 500);
-        setLayout(new BorderLayout());
-        add(mostrarDatos(), BorderLayout.CENTER);
-        setLocationRelativeTo(null);
-        
-    }
-
     public HistorialGanadores() {
-        //this.partida = partida;
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 500);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(800, 500);
         setLayout(new BorderLayout());
         add(mostrarDatos(), BorderLayout.CENTER);
         setLocationRelativeTo(null);
 
     }
-
+//Creamos la tabla para mostrar los datos
     private JPanel mostrarDatos() {
         //Fuente para las columnas
         Font font = new Font("Arial", Font.BOLD, 24);
@@ -91,6 +75,7 @@ public class HistorialGanadores extends JFrame {
         
         //Creamos la instancia de nuestro JTable
         table = new JTable(tableModel);
+        table.getTableHeader().setReorderingAllowed(false);
         table.setRowHeight(30);
         table.setFont(new Font("Verdana", Font.ROMAN_BASELINE, 20));
         
